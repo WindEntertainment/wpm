@@ -28,7 +28,7 @@ echo "Extraction complete. Files are available in $directoryToInstall"
 
 echo "Installing..."
 
-chmod +x "${HOME}/.wpm/wpm.bash"
-sudo mv  "${HOME}/.wpm/wpm.bash" "/usr/local/bin"
+chmod +x "${HOME}/.wpm/wpm"
+sudo mv  "${HOME}/.wpm/wpm" "/usr/local/bin"
 
 echo "Installed to /usr/local/bin"
