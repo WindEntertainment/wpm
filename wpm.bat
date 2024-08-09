@@ -1,2 +1,2 @@
 @echo off
-python %USERPROFILE%/.wpm/wpm/main.py
+python %USERPROFILE%/.wpm/src/main.py

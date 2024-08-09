@@ -1,1 +1,0 @@
-python "${HOME}/.wpm/wpm/main.py"
