@@ -1,15 +1,6 @@
-param (
-    [string]$Version
-)
-
-if (-not $Version) {
-    Write-Error  "You must specify the version"
-    exit 1
-}
-
 Add-Type -AssemblyName "System.IO.Compression.FileSystem"
 
-$packageURL = "https://github.com/WindEntertainment/wpm/releases/download/$Version/source.zip"
+$packageURL = "https://github.com/WindEntertainment/wpm/releases/download/latest/source.zip"
 $currentPath = [System.Environment]::GetEnvironmentVariable("PATH", [System.EnvironmentVariableTarget]::User)
 $userRootDirectory = [System.Environment]::GetFolderPath('UserProfile')
 $directoryToInstall = Join-Path -Path $userRootDirectory -ChildPath ".wpm"
@@ -26,12 +17,12 @@ try {
     Invoke-WebRequest -Uri $packageURL -OutFile $directoryToDownload
 } catch {
     Write-Error "An unexpected error occurred in WebRequest: $_"
-    exit 1
+    return
 }
 
 if (-not (Test-Path $directoryToDownload)) {
     Write-Error  "Failed to download ZIP file."
-    exit 1
+    return
 } 
 
 Write-Output "Download complete."
@@ -44,10 +35,10 @@ try {
 } catch [System.IO.IOException] {
     Write-Error $_
     Write-Warning "Make sure you remove the previous version of Wind Package Manager before installing the new one."
-    exit 1
+    return
 } catch {
     Write-Error $_
-    exit 1
+    return
 }
 
 Write-Output "Adding to PATH..."
@@ -61,7 +52,7 @@ if (-not ($currentPath.Split(';') -contains $directoryToInstall)) {
         Write-Output "Directory added to PATH for the current user."
     } catch {
         Write-Error $_
-        exit 1
+        return
     }
 } else {
     Write-Output "Directory is already in the PATH for the current user."
