@@ -4,23 +4,23 @@ $packageURL = "https://github.com/WindEntertainment/wpm/releases/download/latest
 $currentPath = [System.Environment]::GetEnvironmentVariable("PATH", [System.EnvironmentVariableTarget]::User)
 $userRootDirectory = [System.Environment]::GetFolderPath('UserProfile')
 $directoryToInstall = Join-Path -Path $userRootDirectory -ChildPath ".wpm"
-$directoryToDownload = Join-Path -Path $directoryToInstall -ChildPath "source.zip"
+$pathToDownload = Join-Path -Path $directoryToInstall -ChildPath "source.zip"
 
 if (-not (Test-Path $directoryToInstall)) {
     New-Item -Path $directoryToInstall -ItemType Directory -Force
 }
 
-Write-Output "Downloading Wind Pacakge Manager $Version from GitHub..."
+Write-Output "Downloading Wind Pacakge Manager from GitHub..."
 Write-Output $packageURL
 
 try {
-    Invoke-WebRequest -Uri $packageURL -OutFile $directoryToDownload
+    Invoke-WebRequest -Uri $packageURL -OutFile $pathToDownload
 } catch {
-    Write-Error "An unexpected error occurred in WebRequest: $_"
+    Write-Error "An unexpected error occurred while WebRequest: $_"
     return
 }
 
-if (-not (Test-Path $directoryToDownload)) {
+if (-not (Test-Path $pathToDownload)) {
     Write-Error  "Failed to download ZIP file."
     return
 } 
@@ -29,9 +29,9 @@ Write-Output "Download complete."
 
 Write-Output "Extracting files..."
 try {
-    [System.IO.Compression.ZipFile]::ExtractToDirectory($directoryToDownload, $directoryToInstall)
-
-    Write-Output "Extraction complete. Files are available in $directoryToInstall"
+    [System.IO.Compression.ZipFile]::ExtractToDirectory($pathToDownload, $directoryToInstall)
+ Write-Output "Extraction complete. Files are available in $directoryToInstall"
+   
 } catch [System.IO.IOException] {
     Write-Error $_
     Write-Warning "Make sure you remove the previous version of Wind Package Manager before installing the new one."
