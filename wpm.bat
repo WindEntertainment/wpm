@@ -1,2 +1,2 @@
 @echo off
-python wpm/main.py
+python .wpm/wpm/main.py
