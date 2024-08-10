@@ -50,9 +50,6 @@ jobs:
             --notes "Release for commit ${{ steps.commit.outputs.sha }}" \
             /home/runner/work/wpm/wpm/source.zip
 
-      - name: Update "latest" release
-        run: |
-          gh release edit latest --tag ${{ steps.commit.outputs.sha }}
       # - name: Get Release ID
       #   id: get_id
       #   run: |
