@@ -34,11 +34,6 @@ jobs:
         id: commit
         run: echo "sha=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
-      - name: Create or update "latest" tag
-        run: |
-          git tag -f latest
-          git push -f origin latest
-
       - name: Delete existing release (if any)
         run: |
           gh release delete $sha --yes || echo "No existing release to delete"
@@ -47,9 +42,6 @@ jobs:
         run: |
           gh release create $sha \
             --title "Release $sha" \
-            --notes "Release for commit $sha" \
+            --generate-notes \
+            --latest \
             /home/runner/work/wpm/wpm/source.zip
-
-      - name: Update "latest" release
-        run: |
-          gh release edit latest --tag $sha
