@@ -16,13 +16,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Run install on ${{ runner.os }}
+      - name: Run on Windows
+        if: runner.os == 'Windows'
+        shell: pwsh
         run: |
-          if [ "${{ runner.os }}" == "Windows" ]; then
-            powershell -Command "iex (New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/WindEntertainment/wpm/master/install.ps1')"
-          elif [ "${{ runner.os }}" == "macOS" ] || [ "${{ runner.os }}" == "Linux" ]; then
-            bash <(curl -s https://raw.githubusercontent.com/WindEntertainment/wpm/master/install.bash)
-          else
-            echo "Unsupported OS: ${{ runner.os }}"
-            exit 1
-          fi
+          iex (New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/WindEntertainment/wpm/master/install.ps1')
+
+      - name: Run on macOS
+        if: runner.os == 'macOS'
+        run: |
+          bash <(curl -s https://raw.githubusercontent.com/WindEntertainment/wpm/master/install.bash)
+          wpm
+
+      - name: Run on Linux
+        if: runner.os == 'Linux'
+        run: |
+          bash <(curl -s https://raw.githubusercontent.com/WindEntertainment/wpm/master/install.bash)
+          wpm
