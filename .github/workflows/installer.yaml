@@ -23,20 +23,16 @@ jobs:
         run: |
           iex (New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/WindEntertainment/wpm/master/install.ps1')
 
-      - name: Run on Windows
-        if: runner.os == 'Windows'
-        shell: pwsh
-        run: |
-          wpm
-
       - name: Run on macOS
         if: runner.os == 'macOS'
+        shell: 'bash'
         run: |
           curl -s https://raw.githubusercontent.com/WindEntertainment/wpm/master/install.bash
           wpm -h
 
       - name: Run on Linux
         if: runner.os == 'Linux'
+        shell: 'bash'
         run: |
           curl -s https://raw.githubusercontent.com/WindEntertainment/wpm/master/install.bash
           wpm -h
