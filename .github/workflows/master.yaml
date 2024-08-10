@@ -40,37 +40,12 @@ jobs:
       #     draft: false
       #     prerelease: true
 
-      - name: Create or Get Release ID
-        id: release
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const { data: releases } = await github.rest.repos.listReleases({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-            });
-
-            let release = releases.find(r => r.tag_name === 'latest');
-            if (!release) {
-              const { data: newRelease } = await github.rest.repos.createRelease({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                tag_name: 'latest',
-                name: 'Latest Release',
-              });
-              release = newRelease;
-            }
-
-            console.log("upload url:")
-            console.log(release.upload_url)
-            return { upload_url: release.upload_url }
-
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.release.outputs.upload_url }}
+          upload_url: "https://uploads.github.com/repos/WindEntertainment/wpm/releases/169531751/assets{?name,label}"
           asset_path: "/home/runner/work/wpm/wpm/source.zip"
           asset_name: "source.zip"
           asset_content_type: application/zip
