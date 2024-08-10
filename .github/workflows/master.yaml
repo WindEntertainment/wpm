@@ -25,11 +25,11 @@ jobs:
         run: |
           python ./build.py
 
-          - name: Get current latest release
-          id: get_latest_release
-          run: |
-            LATEST_RELEASE=$(gh release list --json tagName --jq '.[0].tagName' || echo '')
-            echo "LATEST_RELEASE=${LATEST_RELEASE}" >> $GITHUB_ENV
+      - name: Get current latest release
+        id: get_latest_release
+        run: |
+          LATEST_RELEASE=$(gh release list --json tagName --jq '.[0].tagName' || echo '')
+          echo "LATEST_RELEASE=${LATEST_RELEASE}" >> $GITHUB_ENV
 
       - name: Rename latest release to versioned release
         if: env.LATEST_RELEASE != ''
