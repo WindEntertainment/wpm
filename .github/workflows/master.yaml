@@ -1,0 +1,30 @@
+name: Python CI
+
+on:
+  push:
+    branches:
+      - master
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.8
+
+      - name: Build
+        shell: bash
+        run: |
+          python ./build.py
+
+      - name: Upload package as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: "source.zip"
+          path: "/home/runner/work/wpm/source.zip"
+          retention-days: 1
+          overwrite: true
