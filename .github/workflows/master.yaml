@@ -40,8 +40,4 @@ jobs:
 
       - name: Create a new release using GitHub CLI
         run: |
-          gh release create $sha \
-            --title "Release $sha" \
-            --generate-notes \
-            --latest \
-            /home/runner/work/wpm/wpm/source.zip
+          gh release create $sha --title "Release $sha" --generate-notes --latest /home/runner/work/wpm/wpm/source.zip
