@@ -1,6 +1,5 @@
 Add-Type -AssemblyName "System.IO.Compression.FileSystem"
 
-$packageURL = "https://github.com/WindEntertainment/wpm/releases/download/latest/source.zip"
 $currentPath = [System.Environment]::GetEnvironmentVariable("PATH", [System.EnvironmentVariableTarget]::User)
 $userRootDirectory = [System.Environment]::GetFolderPath('UserProfile')
 $directoryToInstall = Join-Path -Path $userRootDirectory -ChildPath ".wpm"
@@ -11,34 +10,32 @@ if (-not (Test-Path $directoryToInstall)) {
 }
 
 Write-Output "Downloading Wind Pacakge Manager from GitHub..."
-Write-Output $packageURL
+
+$latestRelease = Invoke-RestMethod -Uri "https://api.github.com/repos/WindEntertainment/wpm/releases/latest"
+$downloadUrl = $latestRelease.assets[0].browser_download_url
+
+Write-Output "Downloading $filename from $downloadUrl..."
 
 try {
-    Invoke-WebRequest -Uri $packageURL -OutFile $pathToDownload
+  Invoke-WebRequest -Uri $downloadUrl -OutFile $pathToDownload
 } catch {
-    Write-Error "An unexpected error occurred while WebRequest: $_"
-    return
+  Write-Error "An unexpected error occurred while WebRequest: $_"
+  return
 }
 
-if (-not (Test-Path $pathToDownload)) {
-    Write-Error  "Failed to download ZIP file."
-    return
-} 
-
-Write-Output "Download complete."
+Write-Output "Download complete: $filename"
 
 Write-Output "Extracting files..."
 try {
-    [System.IO.Compression.ZipFile]::ExtractToDirectory($pathToDownload, $directoryToInstall)
- Write-Output "Extraction complete. Files are available in $directoryToInstall"
-   
+  [System.IO.Compression.ZipFile]::ExtractToDirectory($pathToDownload, $directoryToInstall)
+  Write-Output "Extraction complete. Files are available in $directoryToInstall"
 } catch [System.IO.IOException] {
-    Write-Error $_
-    Write-Warning "Make sure you remove the previous version of Wind Package Manager before installing the new one."
-    return
+  Write-Error $_
+  Write-Warning "Make sure you remove the previous version of Wind Package Manager before installing the new one."
+  return
 } catch {
-    Write-Error $_
-    return
+  Write-Error $_
+  return
 }
 
 Write-Output "Adding to PATH..."
