@@ -31,15 +31,10 @@ jobs:
           LATEST_RELEASE=$(gh release list --json tagName --jq '.[0].tagName' || echo '')
           echo "LATEST_RELEASE=${LATEST_RELEASE}" >> $GITHUB_ENV
 
-      - name: Rename latest release to versioned release
-        if: env.LATEST_RELEASE != ''
-        run: |
-          gh release edit ${{ env.LATEST_RELEASE }} --title "Release ${{ env.LATEST_RELEASE }}" --tag ${{ env.LATEST_RELEASE }}
-
       - name: Calculate new version
         id: new_version
         run: |
-          if [ -z "${{ env.LATEST_RELEASE }}" ] || [ "${{ env.LATEST_RELEASE }}" = "null" ]; then
+          if [ -z "${{ env.LATEST_RELEASE }}" ]; then
             VERSION="1.0.0"
           else
             VERSION=$(echo ${{ env.LATEST_RELEASE }} | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
@@ -51,12 +46,12 @@ jobs:
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-          git tag -f ${{ env.NEW_VERSION }}
-          git push origin ${{ env.NEW_VERSION }} --force
+          git tag -f ${{ env.NEW_VERSION }} || echo "Tag ${{ env.NEW_VERSION }} already exists"
+          git push origin ${{ env.NEW_VERSION }} --force || echo "Failed to push tag ${{ env.NEW_VERSION }}"
 
       - name: Create new "latest" release
         run: |
-          gh release create latest --title "Latest Release" --target ${{ github.sha }}
+          gh release create latest --title "Latest Release" --target ${{ github.sha }} || echo "Failed to create release 'latest'"
 
       - name: Upload release assets to latest
         run: |
