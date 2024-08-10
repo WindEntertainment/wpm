@@ -25,7 +25,11 @@ jobs:
       - name: Get upload URL
         id: geturl
         run: |
-          upload_url=$(curl -sL https://api.github.com/repos/${{github.repository}}/releases/latest?access_token=${{ secrets.GITHUB_TOKEN }})
+          upload_url=$(curl -L \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+          )
           echo $upload_url
           echo ::set-output name=upload_url::$upload_url
 
