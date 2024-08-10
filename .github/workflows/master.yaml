@@ -39,8 +39,12 @@ jobs:
       - name: Calculate new version
         id: new_version
         run: |
-          VERSION=$(echo ${{ env.LATEST_RELEASE }} | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
-          echo "NEW_VERSION=${VERSION}" >> $GITHUB_ENV
+          if [ -z "${{ env.LATEST_RELEASE }}" ] || [ "${{ env.LATEST_RELEASE }}" = "null" ]; then
+            VERSION="1.0.0"
+          else
+            VERSION=$(echo ${{ env.LATEST_RELEASE }} | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
+          fi
+          echo "NEW_VERSION=$VERSION" >> $GITHUB_ENV
           echo "New version will be $VERSION"
 
       - name: Create new tag for versioned release
