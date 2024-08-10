@@ -1,27 +1,30 @@
 #!/bin/bash
 
-packageURL="https://github.com/WindEntertainment/wpm/releases/download/latest/source.zip"
 directoryToInstall=$HOME/.wpm
 pathToDownload=$directoryToInstall/source.zip
 
 echo "Downloading Wind Pacakge Manager from GitHub..."
-echo $packageURL
 
-mkdir $HOME/.wpm
+mkdir "$HOME"/.wpm
 
-curl -L -o "$pathToDownload" "$packageURL"
+latest_release=$(curl -s "https://api.github.com/repos/WindEntertainment/wpm/releases/latest")
+download_url=$(echo "$latest_release" | jq -r '.assets[0].browser_download_url')
+filename=$(basename "$download_url")
+
+echo "Downloading $filename from $download_url..."
+curl -L -o "$pathToDownload" "$download_url"
 if [ $? -ne 0 ]; then
-    echo "An unexpected error occurred while download: $packageURL"
-    exit 1
+  echo "An unexpected error occurred while downloading"
+  exit 1
 fi
 
-echo "Download complete."
+echo "Download complete: $filename"
 
 echo "Extracting files..."
 unzip -o "${pathToDownload}" -d "${HOME}/.wpm/"
 if [ $? -ne 0 ]; then
-    echo "Failed to extract $pathToDownload"
-    exit 1
+  echo "Failed to extract $pathToDownload"
+  exit 1
 fi
 
 echo "Extraction complete. Files are available in $directoryToInstall"
