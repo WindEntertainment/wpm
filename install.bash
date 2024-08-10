@@ -20,7 +20,7 @@ echo "Download complete."
 echo "Extracting files..."
 unzip -o "${pathToDownload}" -d "${HOME}/.wpm/"
 if [ $? -ne 0 ]; then
-    echo "Failed to extract $ARCHIVE"
+    echo "Failed to extract $pathToDownload"
     exit 1
 fi
 
