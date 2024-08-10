@@ -7,7 +7,8 @@ patterns_to_ignore = [
     "*.bash",
     "*.ps1",
     "*.zip",
-    "*/.git/**"
+    "*/.git/**",
+    "*/.github/**"
 ]
 
 zip_name = "source.zip"
