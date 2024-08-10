@@ -32,11 +32,11 @@ jobs:
       - name: Run on macOS
         if: runner.os == 'macOS'
         run: |
-          curl -s https://raw.githubusercontent.com/WindEntertainment/wpm/master/install.bash)
+          curl -s https://raw.githubusercontent.com/WindEntertainment/wpm/master/install.bash
           wpm -h
 
       - name: Run on Linux
         if: runner.os == 'Linux'
         run: |
-          curl -s https://raw.githubusercontent.com/WindEntertainment/wpm/master/install.bash)
+          curl -s https://raw.githubusercontent.com/WindEntertainment/wpm/master/install.bash
           wpm -h
