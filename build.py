@@ -3,12 +3,13 @@ import zipfile
 import os
 
 patterns_to_ignore = [  
-    "*.gitignore",
-    "*.bash",
-    "*.ps1",
+    "./build.py",
+    "./install.bash",
+    "./install.ps1",
+    "./.gitignore",
     "*.zip",
-    "*/.git/**",
-    "*/.github/**"
+    "./.git/**",
+    "./.github/**"
 ]
 
 zip_name = "source.zip"
