@@ -60,6 +60,9 @@ jobs:
               });
               release = newRelease;
             }
+
+            console.log("upload url:")
+            console.log(release.upload_url)
             return release.upload_url;
 
       - name: Upload Release Asset
