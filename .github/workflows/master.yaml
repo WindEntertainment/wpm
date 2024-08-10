@@ -49,3 +49,7 @@ jobs:
             --title "Release $sha" \
             --notes "Release for commit $sha" \
             /home/runner/work/wpm/wpm/source.zip
+
+      - name: Update "latest" release
+        run: |
+          gh release edit latest --tag $sha
