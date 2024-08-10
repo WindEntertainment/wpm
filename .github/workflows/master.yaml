@@ -56,7 +56,7 @@ jobs:
             https://api.github.com/repos/${{github.repository}}/releases/${{ steps.getid.outputs.release_id }}/assets | jq -r '.[0].url'
           )
           echo $asset_url
-          echo ::set-output name=release_id::$asset_url
+          echo ::set-output name=asset_url::$asset_url
 
       - name: Remove release asset
         env:
