@@ -30,9 +30,14 @@ jobs:
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
 
-      - name: Get the short commit hash
-        id: commit
-        run: echo "::set-output name=sha::$(git rev-parse --short HEAD)"
+      - name: Get the latest version tag
+        id: version
+        run: |
+          latest_tag=$(git describe --tags `git rev-list --tags --max-count=1` --abbrev=0 --match 'v*' || echo "v1.0.0")
+          echo "Latest tag: $latest_tag"
+          new_version="v$(echo $latest_tag | awk -F. '{print $1+1"."$2"."$3}')"
+          echo "New version: $new_version"
+          echo "::set-output name=new_version::$new_version"
 
       - name: Create or update "latest" tag
         run: |
@@ -41,9 +46,9 @@ jobs:
 
       - name: Create a new release using GitHub CLI
         run: |
-          gh release create ${{ steps.commit.outputs.sha }} \
-            --title "Release ${{ steps.commit.outputs.sha }}" \
-            --notes "Release for commit ${{ steps.commit.outputs.sha }}" \
+          gh release create ${{ steps.version.outputs.new_version }} \
+            --title "Release ${{ steps.version.outputs.new_version }}" \
+            --notes "Release for version ${{ steps.version.outputs.new_version }}" \
             /home/runner/work/wpm/wpm/source.zip
 
       # - name: Get Release ID
