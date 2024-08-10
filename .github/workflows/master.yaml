@@ -66,9 +66,10 @@ jobs:
             return release.upload_url
 
       - name: Echo
-        shell: bash
-        run: |
-          echo ${{ steps.release.outputs }}
+        uses: actions/github-script@v6
+        with:
+          script: |
+            console.log(${{ steps.release.outputs }})
 
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
