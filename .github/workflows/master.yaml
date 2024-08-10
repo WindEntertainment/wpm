@@ -9,6 +9,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
     steps:
       - uses: actions/checkout@v4
 
@@ -39,6 +42,15 @@ jobs:
           VERSION=$(echo ${{ env.LATEST_RELEASE }} | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
           echo "NEW_VERSION=${VERSION}" >> $GITHUB_ENV
           echo "New version will be $VERSION"
+
+      - name: Create new tag for versioned release
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git tag ${{ env.NEW_VERSION }}
+          git push origin ${{ env.NEW_VERSION }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create new "latest" release
         run: |
