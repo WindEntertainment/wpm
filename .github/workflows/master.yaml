@@ -34,6 +34,26 @@ jobs:
           echo $upload_url
           echo ::set-output name=upload_url::$upload_url
 
+      - name: Get Release ID
+        id: getid
+        run: |
+          release_id=$(curl -L \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            https://api.github.com/repos/${{github.repository}}/releases/latest | jq -r '.id'
+          )
+          echo $release_id
+          echo ::set-output name=release_id::$release_id
+
+      - name: Remove Release Asset
+        uses: actions/remove-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          release_id: ${{ steps.getid.outputs.release_id }}
+          asset_name: "source.zip"
+
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
         env:
