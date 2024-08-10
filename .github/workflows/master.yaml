@@ -29,18 +29,6 @@ jobs:
           retention-days: 1
           overwrite: true
 
-  release:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Download artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: source
-
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -56,6 +44,6 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: "."
-          asset_name: source.zip
+          asset_path: "/home/runner/work/wpm/wpm/"
+          asset_name: "source.zip"
           asset_content_type: application/zip
