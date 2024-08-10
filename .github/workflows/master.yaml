@@ -29,16 +29,16 @@ jobs:
           retention-days: 1
           overwrite: true
 
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: v0.0.1
-          release_name: release
-          draft: false
-          prerelease: true
+      # - name: Create Release
+      #   id: create_release
+      #   uses: actions/create-release@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     tag_name: v0.0.1
+      #     release_name: release
+      #     draft: false
+      #     prerelease: true
 
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
