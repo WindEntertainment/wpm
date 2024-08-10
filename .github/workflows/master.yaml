@@ -20,6 +20,8 @@ jobs:
         shell: bash
         run: |
           python ./build.py
+          pwd
+          ls
 
       - name: Upload package as artifact
         uses: actions/upload-artifact@v4
