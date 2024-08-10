@@ -23,7 +23,7 @@ jobs:
           python ./build.py
 
       - name: Get upload URL
-        id: geturl
+        id: get_upload_url
         run: |
           upload_url=$(curl -L \
             -H "Accept: application/vnd.github+json" \
@@ -35,7 +35,7 @@ jobs:
           echo ::set-output name=upload_url::$upload_url
 
       - name: Get Release ID
-        id: getid
+        id: get_id
         run: |
           release_id=$(curl -L \
             -H "Accept: application/vnd.github+json" \
@@ -47,13 +47,13 @@ jobs:
           echo ::set-output name=release_id::$release_id
 
       - name: Get Asset Url
-        id: getasseturl
+        id: get_asset_url
         run: |
           asset_url=$(curl -L \
             -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
-            https://api.github.com/repos/${{github.repository}}/releases/${{ steps.getid.outputs.release_id }}/assets | jq -r '.[0].url'
+            https://api.github.com/repos/${{github.repository}}/releases/${{ steps.get_id.outputs.release_id }}/assets | jq -r '.[0].url'
           )
           echo $asset_url
           echo ::set-output name=asset_url::$asset_url
@@ -64,14 +64,14 @@ jobs:
         run: |
           curl -X DELETE \
             -H "Authorization: token $GITHUB_TOKEN" \
-            ${{ steps.getasseturl.outputs.asset_url }}
+            ${{ steps.get_asset_url.outputs.asset_url }}
 
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.geturl.outputs.upload_url }}
+          upload_url: ${{ steps.get_upload_url.outputs.upload_url }}
           asset_path: /home/runner/work/wpm/wpm/source.zip
           asset_name: source.zip
           asset_content_type: application/zip
