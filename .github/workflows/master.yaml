@@ -45,7 +45,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: "https://uploads.github.com/repos/WindEntertainment/wpm/releases/169531751/assets?name=source.zip"
+          upload_url: "https://uploads.github.com/repos/WindEntertainment/wpm/releases/169531751/assets?name='source.zip'"
           asset_path: /home/runner/work/wpm/wpm/source.zip
           asset_name: source.zip
           asset_content_type: application/zip
