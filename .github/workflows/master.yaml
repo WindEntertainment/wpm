@@ -46,18 +46,6 @@ jobs:
             --notes "Release for commit ${{ steps.commit.outputs.sha }}" \
             /home/runner/work/wpm/wpm/source.zip
 
-      # - name: Get upload URL
-      #   id: get_upload_url
-      #   run: |
-      #     upload_url=$(curl -L \
-      #       -H "Accept: application/vnd.github+json" \
-      #       -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-      #       -H "X-GitHub-Api-Version: 2022-11-28" \
-      #       https://api.github.com/repos/${{github.repository}}/releases/latest | jq -r '.upload_url'
-      #     )
-      #     echo $upload_url
-      #     echo ::set-output name=upload_url::$upload_url
-
       # - name: Get Release ID
       #   id: get_id
       #   run: |
