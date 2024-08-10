@@ -2,8 +2,8 @@ name: Python CI
 
 on:
   push:
-    tags:
-      - "v*.*.*"
+    branches:
+      - master
 
 jobs:
   build:
@@ -22,6 +22,14 @@ jobs:
         run: |
           python ./build.py
 
+      - name: Upload package as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: source
+          path: "/home/runner/work/wpm/wpm/source.zip"
+          retention-days: 1
+          overwrite: true
+
       # - name: Create Release
       #   id: create_release
       #   uses: actions/create-release@v1
@@ -38,7 +46,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ github.event.release.upload_url }}
+          upload_url: "https://uploads.github.com/repos/WindEntertainment/wpm/releases/169531751/assets{?name, label}"
           asset_path: /home/runner/work/wpm/wpm/source.zip
           asset_name: source.zip
           asset_content_type: application/zip
