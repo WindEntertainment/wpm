@@ -39,7 +39,7 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v3
         with:
-          name: source.zip
+          name: source
 
       - name: Create Release
         id: create_release
