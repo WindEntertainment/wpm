@@ -6,7 +6,7 @@ $directoryToInstall = Join-Path -Path $userRootDirectory -ChildPath ".wpm"
 $pathToDownload = Join-Path -Path $directoryToInstall -ChildPath "source.zip"
 
 if (-not (Test-Path $directoryToInstall)) {
-    New-Item -Path $directoryToInstall -ItemType Directory -Force
+  New-Item -Path $directoryToInstall -ItemType Directory -Force
 }
 
 Write-Output "Downloading Wind Pacakge Manager from GitHub..."
