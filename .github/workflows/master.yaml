@@ -1,4 +1,4 @@
-name: Python CI
+name: prod
 
 on:
   push:
@@ -25,88 +25,16 @@ jobs:
         run: |
           python ./build.py
 
-      - name: Get current latest release
-        id: get_latest_release
-        run: |
-          LATEST_RELEASE=$(gh release view latest --json tagName --jq .tagName)
-          echo "LATEST_RELEASE=${LATEST_RELEASE}" >> $GITHUB_ENV
-
-      - name: Rename latest release to versioned release
-        if: env.LATEST_RELEASE != ''
-        run: |
-          gh release edit ${{ env.LATEST_RELEASE }} --title "Release ${{ env.LATEST_RELEASE }}" --tag ${{ env.LATEST_RELEASE }}
-
-      - name: Calculate new version
-        id: new_version
-        run: |
-          VERSION=$(echo ${{ env.LATEST_RELEASE }} | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
-          echo "NEW_VERSION=${VERSION}" >> $GITHUB_ENV
-          echo "New version will be $VERSION"
-
-      - name: Create new tag for versioned release
+      - name: Set up Git
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-          git tag ${{ env.NEW_VERSION }}
-          git push origin ${{ env.NEW_VERSION }}
 
-      - name: Create new "latest" release
+      - name: Get the commit sha
+        id: commit
+        run: echo "sha=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+      - name: Create a new release
         run: |
-          gh release create latest --title "Latest Release" --target ${{ github.sha }}
-
-      - name: Upload release assets to latest
-        run: |
-          gh release upload latest dist/*
-      # - name: Get upload URL
-      #   id: get_upload_url
-      #   run: |
-      #     upload_url=$(curl -L \
-      #       -H "Accept: application/vnd.github+json" \
-      #       -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-      #       -H "X-GitHub-Api-Version: 2022-11-28" \
-      #       https://api.github.com/repos/${{github.repository}}/releases/latest | jq -r '.upload_url'
-      #     )
-      #     echo $upload_url
-      #     echo ::set-output name=upload_url::$upload_url
-
-      # - name: Get Release ID
-      #   id: get_id
-      #   run: |
-      #     release_id=$(curl -L \
-      #       -H "Accept: application/vnd.github+json" \
-      #       -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-      #       -H "X-GitHub-Api-Version: 2022-11-28" \
-      #       https://api.github.com/repos/${{github.repository}}/releases/latest | jq -r '.id'
-      #     )
-      #     echo $release_id
-      #     echo ::set-output name=release_id::$release_id
-
-      # - name: Get Asset Url
-      #   id: get_asset_url
-      #   run: |
-      #     asset_url=$(curl -L \
-      #       -H "Accept: application/vnd.github+json" \
-      #       -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-      #       -H "X-GitHub-Api-Version: 2022-11-28" \
-      #       https://api.github.com/repos/${{github.repository}}/releases/${{ steps.get_id.outputs.release_id }}/assets | jq -r '.[0].url'
-      #     )
-      #     echo $asset_url
-      #     echo ::set-output name=asset_url::$asset_url
-
-      # - name: Remove release asset
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   run: |
-      #     curl -X DELETE \
-      #       -H "Authorization: token $GITHUB_TOKEN" \
-      #       ${{ steps.get_asset_url.outputs.asset_url }}
-
-      # - name: Upload Release Asset
-      #   uses: actions/upload-release-asset@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     upload_url: ${{ steps.get_upload_url.outputs.upload_url }}
-      #     asset_path: /home/runner/work/wpm/wpm/source.zip
-      #     asset_name: source.zip
-      #     asset_content_type: application/zip
+          gh release delete $sha --yes || echo "No existing release to delete"
+          gh release create $sha --title "Release $sha" --generate-notes --latest /home/runner/work/wpm/wpm/source.zip
