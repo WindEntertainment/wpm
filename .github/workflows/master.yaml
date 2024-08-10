@@ -25,44 +25,21 @@ jobs:
         run: |
           python ./build.py
 
-      - name: Get current latest release
-        id: get_latest_release
-        run: |
-          LATEST_RELEASE=$(gh release list --json tagName --jq '.[0].tagName' || echo '')
-          echo "LATEST_RELEASE=${LATEST_RELEASE}" >> $GITHUB_ENV
-
-      - name: Calculate new version
-        id: new_version
-        run: |
-          if [ -z "${{ env.LATEST_RELEASE }}" ]; then
-            VERSION="1.0.0"
-          else
-            VERSION=$(echo ${{ env.LATEST_RELEASE }} | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
-          fi
-          echo "NEW_VERSION=$VERSION" >> $GITHUB_ENV
-          echo "New version will be $VERSION"
-
-      - name: Create new tag for versioned release
+      - name: Set up Git
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-          git tag -f ${{ env.NEW_VERSION }}
-          git push origin ${{ env.NEW_VERSION }} --force
 
-      - name: Create new "latest" release
-        run: |
-          gh release create latest --title "Latest Release" --target ${{ github.sha }} || echo "Failed to create release 'latest'"
+      - name: Get the short commit hash
+        id: commit
+        run: echo "::set-output name=sha::$(git rev-parse --short HEAD)"
 
-      - name: Remove existing assets if any
+      - name: Create a new release using GitHub CLI
         run: |
-          existing_assets=$(gh release view latest --json assets --jq '.assets[].name')
-          for asset in $existing_assets; do
-            gh release delete latest --assets $asset --confirm || echo "Failed to delete asset $asset"
-          done
-
-      - name: Upload release assets to latest
-        run: |
-          gh release upload latest /home/runner/work/wpm/wpm/source.zip || echo "Failed to upload assets to release 'latest'"
+          gh release create ${{ steps.commit.outputs.sha }} \
+            --title "Release ${{ steps.commit.outputs.sha }}" \
+            --notes "Release for commit ${{ steps.commit.outputs.sha }}" \
+            /home/runner/work/wpm/wpm/source.zip
 
       # - name: Get upload URL
       #   id: get_upload_url
