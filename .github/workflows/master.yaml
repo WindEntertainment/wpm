@@ -46,16 +46,24 @@ jobs:
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-          git tag -f ${{ env.NEW_VERSION }} || echo "Tag ${{ env.NEW_VERSION }} already exists"
-          git push origin ${{ env.NEW_VERSION }} --force || echo "Failed to push tag ${{ env.NEW_VERSION }}"
+          git tag -f ${{ env.NEW_VERSION }}
+          git push origin ${{ env.NEW_VERSION }} --force
 
       - name: Create new "latest" release
         run: |
           gh release create latest --title "Latest Release" --target ${{ github.sha }} || echo "Failed to create release 'latest'"
 
+      - name: Remove existing assets if any
+        run: |
+          existing_assets=$(gh release view latest --json assets --jq '.assets[].name')
+          for asset in $existing_assets; do
+            gh release delete latest --assets $asset --confirm || echo "Failed to delete asset $asset"
+          done
+
       - name: Upload release assets to latest
         run: |
-          gh release upload latest /home/runner/work/wpm/wpm/source.zip
+          gh release upload latest /home/runner/work/wpm/wpm/source.zip || echo "Failed to upload assets to release 'latest'"
+
       # - name: Get upload URL
       #   id: get_upload_url
       #   run: |
