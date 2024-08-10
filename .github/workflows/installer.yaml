@@ -27,12 +27,12 @@ jobs:
         if: runner.os == 'macOS'
         shell: 'bash'
         run: |
-          curl -s https://raw.githubusercontent.com/WindEntertainment/wpm/master/install.bash
+          bash <(curl -s https://raw.githubusercontent.com/WindEntertainment/wpm/master/install.bash)
           wpm -h
 
       - name: Run on Linux
         if: runner.os == 'Linux'
         shell: 'bash'
         run: |
-          curl -s https://raw.githubusercontent.com/WindEntertainment/wpm/master/install.bash
+          bash <(curl -s https://raw.githubusercontent.com/WindEntertainment/wpm/master/install.bash)
           wpm -h
