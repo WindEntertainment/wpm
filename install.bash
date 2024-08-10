@@ -8,7 +8,8 @@ echo "Downloading Wind Pacakge Manager from GitHub..."
 mkdir "$HOME"/.wpm
 
 latest_release=$(curl -s "https://api.github.com/repos/WindEntertainment/wpm/releases/latest")
-download_url=$(echo "$latest_release" | jq -r '.assets[0].browser_download_url')
+download_url=$(echo "$latest_release" | grep '"browser_download_url":' | sed 's/.*"browser_download_url": "\(.*\)".*/\1/')
+
 filename=$(basename "$download_url")
 
 echo "Downloading $filename from $download_url..."
