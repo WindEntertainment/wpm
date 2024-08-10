@@ -1,1 +1,1 @@
-python3 "${HOME}/.wpm/src/main.py"
+python3 "${HOME}/.wpm/src/main.py" $@

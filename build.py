@@ -21,7 +21,6 @@ def should_ignore(file_name, patterns):
             return True
     return False
 
-
 for root, dirs, files in os.walk("."):
     rel_root = os.path.relpath(root)
     if should_ignore(rel_root, patterns_to_ignore):
