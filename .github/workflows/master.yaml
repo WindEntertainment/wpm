@@ -32,7 +32,7 @@ jobs:
 
       - name: Get the short commit hash
         id: commit
-        run: echo "::set-output name=sha::$(git rev-parse --short HEAD)"
+        run: echo "sha=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
       - name: Create or update "latest" tag
         run: |
@@ -41,21 +41,11 @@ jobs:
 
       - name: Delete existing release (if any)
         run: |
-          gh release delete ${{ steps.commit.outputs.sha }} --yes || echo "No existing release to delete"
+          gh release delete $sha --yes || echo "No existing release to delete"
 
       - name: Create a new release using GitHub CLI
         run: |
-          gh release create ${{ steps.commit.outputs.sha }} \
-            --title "Release ${{ steps.commit.outputs.sha }}" \
-            --notes "Release for commit ${{ steps.commit.outputs.sha }}" \
+          gh release create $sha \
+            --title "Release $sha" \
+            --notes "Release for commit $sha" \
             /home/runner/work/wpm/wpm/source.zip
-
-      # - name: Upload Release Asset
-      #   uses: actions/upload-release-asset@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     upload_url: ${{ steps.get_upload_url.outputs.upload_url }}
-      #     asset_path: /home/runner/work/wpm/wpm/source.zip
-      #     asset_name: source.zip
-      #     asset_content_type: application/zip
