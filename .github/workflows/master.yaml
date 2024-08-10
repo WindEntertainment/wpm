@@ -34,6 +34,11 @@ jobs:
         id: commit
         run: echo "::set-output name=sha::$(git rev-parse --short HEAD)"
 
+      - name: Create or update "latest" tag
+        run: |
+          git tag -f latest
+          git push -f origin latest
+
       - name: Create a new release using GitHub CLI
         run: |
           gh release create ${{ steps.commit.outputs.sha }} \
