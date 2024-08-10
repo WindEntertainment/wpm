@@ -30,14 +30,11 @@ jobs:
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
 
-      - name: Get the short commit hash
+      - name: Get the commit sha
         id: commit
         run: echo "sha=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
-      - name: Delete existing release (if any)
+      - name: Create a new release
         run: |
           gh release delete $sha --yes || echo "No existing release to delete"
-
-      - name: Create a new release using GitHub CLI
-        run: |
           gh release create $sha --title "Release $sha" --generate-notes --latest /home/runner/work/wpm/wpm/source.zip
