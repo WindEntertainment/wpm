@@ -49,20 +49,14 @@ jobs:
           git config user.email "actions@github.com"
           git tag ${{ env.NEW_VERSION }}
           git push origin ${{ env.NEW_VERSION }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create new "latest" release
         run: |
           gh release create latest --title "Latest Release" --target ${{ github.sha }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload release assets to latest
         run: |
           gh release upload latest dist/*
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # - name: Get upload URL
       #   id: get_upload_url
       #   run: |
